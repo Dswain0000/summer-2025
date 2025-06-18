@@ -1,22 +1,40 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TMPro;
 public class PlayerControl : MonoBehaviour
 {
     private Rigidbody rb;
+    private int count;
     private float movementx;
     private float movementy;
     [SerializeField] private float speed = 0;
+    public TextMeshProUGUI countText;
+    public GameObject winTextObject;
     void Start()
     {
+        winTextObject.SetActive(false);
+        count = 0;
         rb = GetComponent<Rigidbody>();
+        SetCountText();
     }
     private void FixedUpdate()
     {
         // create a movement vector using x & y inputs// 
         Vector3 movement = new Vector3(movementx, 0.0f, z: movementy);
-        
+
         rb.AddForce(force: movement * speed);
         // applies force to the rigidbody to move the player//
+    }
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("pickup"))
+        {
+            other.gameObject.SetActive(false);
+            count = count + 1;
+            SetCountText();
+    
+        }
+       
     }
     void OnMove(InputValue movementValue)
     {
@@ -24,6 +42,15 @@ public class PlayerControl : MonoBehaviour
         Vector2 movementVector = movementValue.Get<Vector2>();
         //convert input values into vector2 for movement is the code above//
         movementx = movementVector.x;
-         movementy = movementVector.y;
+        movementy = movementVector.y;
     }
+    void SetCountText() 
+   { if (count >= 12)
+       {
+           winTextObject.SetActive(true);
+       }
+
+
+       countText.text =  "Count: " + count.ToString();
+   }
 }
