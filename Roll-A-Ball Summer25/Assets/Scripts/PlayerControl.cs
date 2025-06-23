@@ -32,9 +32,9 @@ public class PlayerControl : MonoBehaviour
             other.gameObject.SetActive(false);
             count = count + 1;
             SetCountText();
-    
+
         }
-       
+
     }
     void OnMove(InputValue movementValue)
     {
@@ -44,13 +44,26 @@ public class PlayerControl : MonoBehaviour
         movementx = movementVector.x;
         movementy = movementVector.y;
     }
-    void SetCountText() 
-   { if (count >= 12)
-       {
-           winTextObject.SetActive(true);
-       }
+    void SetCountText()
+    {
+        if (count >= 15)
+        {
+            winTextObject.SetActive(true);
+            Destroy(GameObject.FindGameObjectWithTag("enemy"));
+        }
 
 
-       countText.text =  "Count: " + count.ToString();
+        countText.text = "Count: " + count.ToString();
+    }
+   private void OnCollisionEnter(Collision collision)
+{
+   if (collision.gameObject.CompareTag("enemy"))
+   {
+       // Destroy the current object
+       Destroy(gameObject); 
+       // Update the winText to display "You Lose!"
+       winTextObject.gameObject.SetActive(true);
+       winTextObject.GetComponent<TextMeshProUGUI>().text = "You Lose!";
    }
+}
 }
